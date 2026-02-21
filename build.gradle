@@ -20,8 +20,6 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	// Thymeleaf 템플릿 엔진 추가
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
 	// Database Connection Library
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'

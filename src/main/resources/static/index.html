@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>동아리 관리 시스템 (CSR 버전)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5 text-center">
+        <h1 class="text-primary fw-bold">동아리 관리 시스템</h1>
+        <p id="api-message" class="lead mt-3 text-secondary">서버와 연결을 시도하고 있습니다...</p>
+        <button id="fetch-btn" class="btn btn-success mt-4">API 데이터 가져오기</button>
+    </div>
+
+    <script>
+        // 버튼을 클릭했을 때 실행될 동작을 정의합니다.
+        document.getElementById('fetch-btn').addEventListener('click', function() {
+            
+            // 1. 서버의 REST API(/api/hello)를 호출합니다. (Fetch API)
+            fetch('/api/hello')
+                .then(response => response.text()) // 2. 서버가 보낸 응답을 글자(Text)로 읽어옵니다.
+                .then(data => {
+                    // 3. 텅 비어있던 p 태그를 찾아, 서버에서 받은 데이터로 교체합니다! (이것이 CSR입니다)
+                    document.getElementById('api-message').innerText = data;
+                    document.getElementById('api-message').classList.remove('text-secondary');
+                    document.getElementById('api-message').classList.add('text-dark', 'fw-bold');
+                })
+                .catch(error => {
+                    console.error('에러 발생:', error);
+                    document.getElementById('api-message').innerText = '서버 통신에 실패했습니다.';
+                });
+        });
+    </script>
+</body>
+</html>
