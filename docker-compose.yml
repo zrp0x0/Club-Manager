@@ -1,0 +1,10 @@
+services: # 실행할 컨테이너들의 목록
+  postgres:
+    image: postgres:16 # 사용할 데이터베이스의 종류와 버전
+    container_name: club-postgres # 우리가 알아보기 쉬운 컨테이너 이름표
+    environment: # DB 내부에서 사용할 기본 계정 정보 설정
+      POSTGRES_USER: club_user
+      POSTGRES_PASSWORD: club_password
+      POSTGRES_DB: club_db
+    ports: # PC의 포트와 도커 내부의 포트를 연결 (PC포트:도커포트)
+      - "5432:5432"
