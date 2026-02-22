@@ -10,6 +10,7 @@ import com.club.manager.common.exception.BusinessException;
 import com.club.manager.common.exception.ErrorCode;
 import com.club.manager.member.domain.Member;
 import com.club.manager.member.domain.MemberRepository;
+import com.club.manager.member.domain.dto.LoginRequest;
 import com.club.manager.member.domain.dto.MemberCreateRequest;
 import com.club.manager.member.domain.dto.MemberResponse;
 
@@ -49,4 +50,15 @@ public class MemberService {
                 .toList();
     }
     
+    @Transactional
+    public MemberResponse login(LoginRequest request) {
+        Member member = memberRepository.findByEmail(request.email())
+                            .orElseThrow(() -> new BusinessException(ErrorCode.LOGIN_FAILED));
+
+        if (passwordEncoder.matches(request.password(), member.getPassword())) {
+            throw new BusinessException(ErrorCode.LOGIN_FAILED);
+        }
+
+        return MemberResponse.from(member);
+    }
 }

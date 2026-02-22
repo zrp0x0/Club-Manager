@@ -12,9 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.club.manager.common.response.ApiResponse;
 import com.club.manager.member.application.MemberService;
+import com.club.manager.member.domain.dto.LoginRequest;
 import com.club.manager.member.domain.dto.MemberCreateRequest;
 import com.club.manager.member.domain.dto.MemberResponse;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @RestController
@@ -40,5 +43,25 @@ public class MemberController {
     public ResponseEntity<ApiResponse<List<MemberResponse>>> getAllMembers() {
         List<MemberResponse> responses = memberService.getAllMembers();
         return ResponseEntity.ok(ApiResponse.success(responses));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<MemberResponse>> login(
+        @Valid @RequestBody LoginRequest request,
+        HttpServletRequest httpServletRequest // 웹 요청의 모든 정보가 담긴 객체
+    ) {
+        // 서비스 계층에 검증을 맡김
+        MemberResponse response = memberService.login(request);
+
+        // 검증을 통과했다면, 세션을 발급
+        // getSession(true): 기존에 쓰던 세션이 있으면 그걸 주고, 없으면 새로 만들어서 줌
+        HttpSession session = httpServletRequest.getSession(true);
+
+        // 발급받은 세션(서버의 메모리 공간)에 로그인 회원의 ID(식별자)를 적어둠
+        // "LOGIN_MEMBER"라는 이름표를 붙여서 보관함
+        session.setAttribute("LOGIN_MEMBER", response.id());
+        
+        // 성공 응답을 보냄
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 }
