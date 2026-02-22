@@ -55,7 +55,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(request.email())
                             .orElseThrow(() -> new BusinessException(ErrorCode.LOGIN_FAILED));
 
-        if (passwordEncoder.matches(request.password(), member.getPassword())) {
+        if (!passwordEncoder.matches(request.password(), member.getPassword())) {
             throw new BusinessException(ErrorCode.LOGIN_FAILED);
         }
 
