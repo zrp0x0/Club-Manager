@@ -2,6 +2,7 @@ package com.club.manager.member.presentation;
 
 import java.util.List;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -63,5 +64,20 @@ public class MemberController {
         
         // 성공 응답을 보냄
         return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(
+        HttpServletRequest request
+    ) {
+        // 현재 요청에 포함된 세션을 가져옴
+        // getSession(false): 기존 세션이 있으면 가져오고, 없으면 새로 만들지 말고 null
+        HttpSession session = request.getSession(false);
+
+        if (session != null) {
+            session.invalidate(); // 서버 메모리에서 세션 장부 파기
+        }
+
+        return ResponseEntity.ok(ApiResponse.success(null));
     }
 }
