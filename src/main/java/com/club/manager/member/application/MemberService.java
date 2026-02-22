@@ -2,6 +2,7 @@ package com.club.manager.member.application;
 
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,9 +17,11 @@ import com.club.manager.member.domain.dto.MemberResponse;
 public class MemberService {
     
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
         this.memberRepository = memberRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -29,6 +32,11 @@ public class MemberService {
         }
 
         Member member = request.toEntity();
+
+        // DB에 넣기 넣기 직전에 평문 비밀번호를 꺼내서 암호화한 뒤 다시 세팅
+        String encodedPassword = passwordEncoder.encode(member.getPassword());
+        member.setPassword(encodedPassword);
+
         Member savedMember = memberRepository.save(member);
 
         return MemberResponse.from(savedMember);
@@ -40,7 +48,5 @@ public class MemberService {
                 .map(MemberResponse::from)
                 .toList();
     }
-
-
-
+    
 }
